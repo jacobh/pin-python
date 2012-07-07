@@ -1,4 +1,7 @@
 import requests
+from .charge import Charge
+from .card import Card
+from .customer import Customer
 
 class Pin(object):
     def __init__(self, mode, api_key, *args, **kwargs):
@@ -32,7 +35,18 @@ class Pin(object):
     @property
     def charges(self):
         json = self.call_api('get', 'charges')
-        return json
+
+        charges = []
+        for charge_dict in json['response']:
+            charges.append(Charge(
+                charge_dict['amount'],
+                charge_dict['description'],
+                charge_dict['email'],
+                charge_dict['ip_address'],
+                Card(),
+                self
+            ))
+        return charges
 
     # these two currently aren't working, not sure why
     @property
@@ -44,3 +58,6 @@ class Pin(object):
     def customers(self):
         json = self.call_api('get', 'customers')
         return json
+
+    def create_charge(self, *args, **kwargs):
+        charge = Charge(*args, **kwargs)
