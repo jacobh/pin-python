@@ -21,8 +21,26 @@ class Pin(object):
         else:
             return 'https://api.pin.net.au/1/'
 
+    def call_api(self, method, action, payload=None):
+        url = self.api_url + action
+
+        if method == 'get':
+            response = requests.get(url, auth=(self._api_key+':', ''))
+
+        return response.json
+
     @property
     def charges(self):
-        url = "%scharges" % self.api_url
-        request = requests.get(url, auth=(self._api_key+':', ''))
-        return request.json
+        json = self.call_api('get', 'charges')
+        return json
+
+    # these two currently aren't working, not sure why
+    @property
+    def cards(self):
+        json = self.call_api('get', 'cards')
+        return json
+
+    @property
+    def customers(self):
+        json = self.call_api('get', 'customers')
+        return json
