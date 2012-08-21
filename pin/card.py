@@ -26,6 +26,8 @@ class Card(object):
         self.address_state = address_state
         self.address_country = address_country
 
+        self.pin = pin
+
     def build_payload(self):
         wanted_keys = [
             'number',

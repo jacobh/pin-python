@@ -14,6 +14,7 @@ class Charge(object):
         self.description = description
         self.email = email
         self.ip_address = ip_address
+
         self.card = card
         self.pin = pin
 
