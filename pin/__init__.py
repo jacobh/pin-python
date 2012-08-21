@@ -24,13 +24,21 @@ class Pin(object):
         else:
             return 'https://api.pin.net.au/1/'
 
-    def call_api(self, method, action, payload=None):
-        url = self.api_url + action
+    def call_api(self, method, resource, payload=None):
+        url = self.api_url + resource
 
-        if method == 'get':
-            response = requests.get(url, auth=(self._api_key+':', ''))
+        allowed_methods = ('get', 'post')
+        allowed_resources = ('cards', 'customers', 'charges')
 
-        return response.json
+        if method in allowed_methods and resource in allowed_resources:
+            if method == 'get':
+                response = requests.get(url, auth=(self._api_key+':', ''), data=payload)
+
+            elif method == 'post':
+                response = requests.post(url, auth=(self._api_key+':', ''), data=payload)
+
+            #print response
+            return response
 
     @property
     def charges(self):
@@ -60,4 +68,9 @@ class Pin(object):
         return json
 
     def create_charge(self, *args, **kwargs):
-        charge = Charge(*args, **kwargs)
+        kwargs['pin'] = self
+        return Charge(*args, **kwargs)
+
+    def create_card(self, *args, **kwargs):
+        kwargs['pin'] = self
+        return Card(*args, **kwargs)
